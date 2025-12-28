@@ -191,7 +191,8 @@ async function generateSingleImage(prompt, token) {
     // C. 下载并转 Base64
     const imageRes = await fetch(imageUrl);
     const imageBuffer = await imageRes.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
+    // 使用安全的转换函数，防止爆栈
+    const base64 = bufferToBase64(imageBuffer);
 
     return { success: true, base64: base64 };
 
@@ -199,4 +200,23 @@ async function generateSingleImage(prompt, token) {
     console.error("Generation error:", err);
     return { success: false, error: err.message };
   }
+}
+
+/**
+ * 安全地将 ArrayBuffer 转为 Base64
+ * 避免使用 String.fromCharCode(...uint8Array) 导致的大文件爆栈问题
+ */
+function bufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  const chunkSize = 0x8000; // 32KB 分块处理
+  
+  for (let i = 0; i < len; i += chunkSize) {
+    binary += String.fromCharCode.apply(
+      null,
+      bytes.subarray(i, Math.min(i + chunkSize, len))
+    );
+  }
+  return btoa(binary);
 }
