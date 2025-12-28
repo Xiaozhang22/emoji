@@ -4,7 +4,7 @@ compatibility_date = "2024-01-01"
 
 # 开启 KV 绑定
 kv_namespaces = [
-  { binding = "EMOJI_KV", id = "406362837380485a8508605333502859" } 
+  { binding = "EMOJI_KV", id = "15c7c8e9565c48cb885d7728821ed1ad" } 
 ]
 
 # 注意：这里只写绑定关系，具体的 MODELSCOPE_API_KEY 仍然留在 Cloudflare 后台作为 Secret 存储
