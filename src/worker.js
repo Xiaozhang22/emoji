@@ -62,14 +62,16 @@ export default {
 
       // 过滤失败的，只返回成功的 Base64
       const successfulImages = results.filter(r => r.success).map(r => r.base64);
+      const errors = results.filter(r => !r.success).map(r => r.error);
 
       // 5. 记录日志 (可选)
       // ctx.waitUntil(env.EMOJI_KV.put(`log:${Date.now()}`, JSON.stringify({ prompt, count: actualCount })));
 
       return new Response(JSON.stringify({
-        success: true,
+        success: successfulImages.length > 0,
         images: successfulImages,
         total: successfulImages.length,
+        errors: errors,
         prompt_used: refinedPrompt
       }), {
         headers: { 
