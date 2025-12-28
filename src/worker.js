@@ -37,8 +37,30 @@ export default {
     }
 
     try {
+      // DEBUG: 检查 Key 是否存在
+      const key = env.MODELSCOPE_API_KEY;
+      const keyInfo = key ? `Length: ${key.length}, Start: ${key.substring(0, 2)}...` : "MISSING/UNDEFINED";
+      
+      if (!key) throw new Error("API Key is missing in Worker Environment");
+
       const body = await request.json();
       const { prompt, count = 1, apiKey } = body;
+
+      // ... (后续代码不变) ...
+
+    } catch (e) {
+      // 获取 Key 信息用于调试
+      const key = env.MODELSCOPE_API_KEY;
+      const keyInfo = key ? `Length: ${key.length}, Start: ${key.substring(0, 2)}...` : "MISSING/UNDEFINED";
+      
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: e.message,
+        debug_key_info: keyInfo 
+      }), { status: 500 });
+    }
+  },
+};
 
       // 2. 简单鉴权 (对比 KV 中的 Key)
       // const isValidUser = await env.EMOJI_KV.get(apiKey);
